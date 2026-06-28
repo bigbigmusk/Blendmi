@@ -1,0 +1,48 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Baloo 2", system-ui, sans-serif;
+  --font-sans: "Hanken Grotesk", system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-cream text-ink font-sans antialiased;
+  }
+  ::selection {
+    background: #ff1e8e;
+    color: #fff;
+  }
+}
+
+@layer components {
+  .wordmark {
+    @apply font-display font-extrabold tracking-tight;
+    letter-spacing: -0.04em;
+  }
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-7 py-3.5 font-semibold transition-all active:scale-[0.97] disabled:opacity-50 disabled:pointer-events-none;
+  }
+  .btn-pink {
+    @apply btn bg-pink text-white hover:bg-pink-deep;
+  }
+  .btn-ink {
+    @apply btn bg-ink text-cream hover:bg-black;
+  }
+  .btn-outline {
+    @apply btn border-2 border-ink text-ink hover:bg-ink hover:text-cream;
+  }
+  .chip {
+    @apply inline-flex items-center rounded-full border-2 border-ink px-4 py-1.5 text-sm font-semibold transition-colors;
+  }
+  .card {
+    @apply rounded-[28px] border-2 border-ink/10 bg-white;
+  }
+}
+
+/* Hide scrollbar for marquee */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
