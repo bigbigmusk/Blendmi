@@ -12,7 +12,7 @@
     @apply bg-cream text-ink font-sans antialiased;
   }
   ::selection {
-    background: #ff1e8e;
+    background: #ff28ba;
     color: #fff;
   }
 }

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useCart } from "./CartProvider";
 import { CartIcon } from "./Icons";
 import { SocialIcon } from "./Icons";
+import { BlobEye } from "./BrandArt";
 import { socialLinks } from "@/lib/social";
 
 const nav = [
@@ -56,9 +57,12 @@ export function Header() {
             </div>
           </button>
 
-          <Link href="/" className="wordmark text-3xl sm:text-4xl">
-            BLENDMI
-            <sup className="ml-0.5 align-super text-xs">™</sup>
+          <Link href="/" className="flex items-center gap-2">
+            <span className="wordmark text-3xl sm:text-4xl">
+              BLENDMI
+              <sup className="ml-0.5 align-super text-xs">™</sup>
+            </span>
+            <BlobEye className="hidden h-7 w-7 sm:block" />
           </Link>
 
           <nav className="hidden items-center gap-7 lg:flex">

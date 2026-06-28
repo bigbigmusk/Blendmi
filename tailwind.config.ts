@@ -9,15 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // BLENDMI brand palette
-        ink: "#141115",
-        cream: "#F4EBDD",
-        creamdark: "#EADFCB",
+        // BLENDMI official brand palette
+        ink: "#0D0D0D", // INK BLACK
+        cream: "#FFF0E6", // CREAM
+        creamdark: "#F6E1D2",
         pink: {
-          DEFAULT: "#FF1E8E", // hot magenta-pink
-          soft: "#FF8FC4",
-          pale: "#FFC9E2",
-          deep: "#D6006E",
+          DEFAULT: "#FF28BA", // ODD PINK
+          soft: "#FFD6E4", // SOFT PINK
+          pale: "#FFE6F1", // lighter tint for backgrounds
+          deep: "#E0009E", // darker odd pink for hovers
         },
       },
       fontFamily: {

@@ -5,30 +5,26 @@ export type SocialLink = {
   icon: "tiktok" | "instagram" | "youtube" | "pinterest";
 };
 
-// Update these URLs to the brand's real profiles.
+// Instagram is the brand's confirmed, official profile.
+// TikTok / YouTube use the same @blendmibeauty handle as sensible defaults —
+// update the URLs here once those accounts are confirmed.
 export const socialLinks: SocialLink[] = [
   {
-    label: "TikTok",
-    handle: "@blendmi",
-    href: "https://www.tiktok.com/@blendmi",
-    icon: "tiktok",
-  },
-  {
     label: "Instagram",
-    handle: "@blendmi",
-    href: "https://www.instagram.com/blendmi",
+    handle: "@blendmibeauty",
+    href: "https://www.instagram.com/blendmibeauty",
     icon: "instagram",
   },
   {
-    label: "YouTube",
-    handle: "@blendmi",
-    href: "https://www.youtube.com/@blendmi",
-    icon: "youtube",
+    label: "TikTok",
+    handle: "@blendmibeauty",
+    href: "https://www.tiktok.com/@blendmibeauty",
+    icon: "tiktok",
   },
   {
-    label: "Pinterest",
-    handle: "blendmi",
-    href: "https://www.pinterest.com/blendmi",
-    icon: "pinterest",
+    label: "YouTube",
+    handle: "@blendmibeauty",
+    href: "https://www.youtube.com/@blendmibeauty",
+    icon: "youtube",
   },
 ];
