@@ -17,7 +17,7 @@ export default function SuccessPage() {
 function Success() {
   const { clear } = useCart();
   const params = useSearchParams();
-  const sessionId = params.get("session_id");
+  const reference = params.get("session_id") || params.get("ref");
 
   // Payment succeeded on Stripe → empty the bag.
   useEffect(() => {
@@ -33,9 +33,9 @@ function Success() {
         Your payment went through and your order is confirmed. A receipt and tracking are on their way
         to your inbox.
       </p>
-      {sessionId && (
+      {reference && (
         <div className="mt-6 break-all rounded-2xl bg-pink-pale px-6 py-4 text-sm font-semibold">
-          Reference: <span className="text-pink-deep">{sessionId.slice(0, 24)}…</span>
+          Reference: <span className="text-pink-deep">{reference.slice(0, 24)}…</span>
         </div>
       )}
       <div className="mt-8 flex gap-3">

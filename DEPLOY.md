@@ -37,7 +37,23 @@ Vercel 是 Next.js 官方平台，免费套餐对小品牌完全够用，自带 
 
 Stripe 无月费，只对成功交易收取手续费（约 2.9% + $0.30/笔）。
 
-> 想用 PayPal 也可以——告诉我，我可以再加一个 PayPal 按钮作为备选支付方式。
+---
+
+## 2b. 开启 PayPal 收款（可选，无月费）
+
+结账页已内置 PayPal 按钮，**配置后自动显示，不配置则自动隐藏**。
+
+1. 免费登录 <https://developer.paypal.com/dashboard/applications> 创建一个 App，
+   拿到 **Client ID** 和 **Secret**（先用 Sandbox 测试，正式收款再切 Live）。
+2. 在 Vercel → **Settings → Environment Variables** 新增以下变量：
+   - `NEXT_PUBLIC_PAYPAL_CLIENT_ID` = 你的 Client ID（浏览器端 SDK 需要）
+   - `PAYPAL_CLIENT_ID` = 同一个 Client ID
+   - `PAYPAL_CLIENT_SECRET` = 你的 Secret
+   - `PAYPAL_ENV` = `sandbox`（测试）或 `live`（正式）
+3. **Redeploy**。结账页就会在「按卡支付」下方出现 PayPal 按钮。
+
+> Stripe 和 PayPal 可以同时开启，让顾客二选一；也可以只开其中一个。
+> 金额都在服务端按商品库重新核对，防止前端篡改价格。
 
 ---
 

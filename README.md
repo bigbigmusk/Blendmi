@@ -50,11 +50,13 @@ No monthly fees anywhere. See **[DEPLOY.md](./DEPLOY.md)** for step-by-step (中
 
 - **Hosting** — deploy free to **Vercel** (Next.js native, free tier, HTTPS + CDN
   + a free `*.vercel.app` domain). Netlify / Cloudflare Pages also work.
-- **Payments** — built-in **Stripe Checkout** via a serverless API route
-  (`app/api/checkout/route.ts`). Stripe has **no monthly fee** (per-transaction
-  only). Set the `STRIPE_SECRET_KEY` env var to turn it on; leave it blank and the
-  site runs a free **demo checkout** so it works the moment it's deployed.
-  Prices are re-validated server-side from the catalogue (never trust the client).
+- **Payments — two free options, no monthly fee:**
+  - **Stripe Checkout** via a serverless route (`app/api/checkout/route.ts`). Set
+    `STRIPE_SECRET_KEY` to enable; blank → free **demo checkout** so it works the
+    moment it's deployed.
+  - **PayPal** buttons via `app/api/paypal/*` routes. Set the `PAYPAL_*` env vars
+    to enable; the button auto-hides when unconfigured.
+  - Both re-validate prices server-side from the catalogue (never trust the client).
 
 Update real social URLs in `lib/social.ts` and product data in `lib/products.ts`.
 

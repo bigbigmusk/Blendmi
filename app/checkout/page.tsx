@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { useCart } from "@/components/CartProvider";
 import { BlobEye } from "@/components/BrandArt";
+import { PayPalCheckout } from "@/components/PayPalCheckout";
 
 export default function CheckoutPage() {
   return (
@@ -147,9 +148,12 @@ function Checkout() {
         {error && <p className="mt-4 text-sm font-semibold text-pink-deep">{error}</p>}
 
         <button onClick={pay} disabled={loading} className="btn-ink mt-6 w-full text-lg">
-          {loading ? "Redirecting…" : `Pay securely · $${total.toFixed(2)}`}
+          {loading ? "Redirecting…" : `Pay by card · $${total.toFixed(2)}`}
         </button>
-        <Link href="/cart" className="mt-3 block text-center text-sm font-semibold underline">
+
+        <PayPalCheckout items={items} />
+
+        <Link href="/cart" className="mt-4 block text-center text-sm font-semibold underline">
           Back to bag
         </Link>
 
