@@ -2,11 +2,26 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { useCart } from "@/components/CartProvider";
 import { BlobEye } from "@/components/BrandArt";
 
 export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="mx-auto max-w-6xl px-6 py-20">Loading…</div>}>
+      <Checkout />
+    </Suspense>
+  );
+}
+
+function Checkout() {
   const { items, subtotal, clear } = useCart();
+  const params = useSearchParams();
+  const canceled = params.get("canceled");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [placed, setPlaced] = useState(false);
   const [orderId, setOrderId] = useState("");
 
@@ -14,13 +29,38 @@ export default function CheckoutPage() {
   const tax = +(subtotal * 0.08).toFixed(2);
   const total = subtotal + shipping + tax;
 
-  function placeOrder(e: React.FormEvent) {
-    e.preventDefault();
-    const id = "BM-" + Math.floor(100000 + Math.random() * 900000);
-    setOrderId(id);
-    setPlaced(true);
-    clear();
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  async function pay() {
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((i) => ({ slug: i.slug, color: i.color, qty: i.qty })),
+        }),
+      });
+      const data = await res.json();
+
+      if (data.url) {
+        // Real Stripe Checkout — hand off to the hosted, secure payment page.
+        window.location.href = data.url;
+        return;
+      }
+      if (data.demo) {
+        // No payment key configured yet → free demo confirmation.
+        setOrderId("BM-" + Math.floor(100000 + Math.random() * 900000));
+        setPlaced(true);
+        clear();
+        window.scrollTo({ top: 0, behavior: "smooth" });
+        return;
+      }
+      setError(data.error || "Something went wrong. Please try again.");
+    } catch {
+      setError("Network error. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (placed) {
@@ -58,93 +98,66 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="mx-auto max-w-6xl px-6 py-12">
-      <h1 className="wordmark mb-8 text-5xl">CHECKOUT</h1>
-      <form onSubmit={placeOrder} className="grid gap-10 lg:grid-cols-[1.4fr_1fr]">
-        <div className="space-y-8">
-          <Fieldset title="Contact">
-            <Input name="email" type="email" label="Email" required full />
-          </Fieldset>
+    <div className="mx-auto max-w-3xl px-6 py-12">
+      <h1 className="wordmark mb-2 text-5xl">CHECKOUT</h1>
+      <p className="mb-8 text-ink/60">
+        Secure payment powered by Stripe — card, Apple&nbsp;Pay &amp; Google&nbsp;Pay. Your shipping
+        details are collected on the next step.
+      </p>
 
-          <Fieldset title="Shipping address">
-            <Input name="firstName" label="First name" required />
-            <Input name="lastName" label="Last name" required />
-            <Input name="address" label="Address" required full />
-            <Input name="city" label="City" required />
-            <Input name="zip" label="ZIP / Postal code" required />
-            <Input name="country" label="Country" required full defaultValue="United States" />
-          </Fieldset>
+      {canceled && (
+        <div className="mb-6 rounded-2xl bg-pink-pale px-5 py-4 text-sm font-semibold">
+          Payment canceled — your bag is still here whenever you&apos;re ready. ✦
+        </div>
+      )}
 
-          <Fieldset title="Payment">
-            <p className="col-span-2 -mt-1 mb-1 text-sm text-ink/50">
-              Demo checkout — no card is charged. Plug in Stripe or Shopify to go live.
-            </p>
-            <Input name="card" label="Card number" placeholder="4242 4242 4242 4242" required full />
-            <Input name="exp" label="Expiry (MM/YY)" placeholder="12/28" required />
-            <Input name="cvc" label="CVC" placeholder="123" required />
-          </Fieldset>
+      <div className="rounded-[28px] border-2 border-ink/10 bg-white p-6">
+        <h2 className="wordmark text-2xl">Your bag</h2>
+        <ul className="mt-4 space-y-3">
+          {items.map((i) => (
+            <li key={`${i.slug}-${i.color}`} className="flex items-center gap-3">
+              <div
+                className="relative grid h-14 w-14 flex-none place-items-center rounded-xl"
+                style={{ background: i.accent + "22" }}
+              >
+                <div className="h-8 w-8 rounded-full" style={{ background: i.accent }} />
+                <span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-ink text-xs text-cream">
+                  {i.qty}
+                </span>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-bold leading-tight">{i.name}</p>
+                <p className="text-xs text-ink/50">{i.color}</p>
+              </div>
+              <span className="text-sm font-semibold">${(i.price * i.qty).toFixed(2)}</span>
+            </li>
+          ))}
+        </ul>
 
-          <button type="submit" className="btn-ink w-full text-lg">
-            Place order · ${total.toFixed(2)}
-          </button>
+        <div className="mt-5 space-y-1.5 border-t-2 border-ink/10 pt-4 text-sm text-ink/70">
+          <Row label="Subtotal" value={`$${subtotal.toFixed(2)}`} />
+          <Row label="Shipping" value={shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`} />
+          <Row label="Tax (est.)" value={`$${tax.toFixed(2)}`} />
+        </div>
+        <div className="mt-3 flex justify-between border-t-2 border-ink/10 pt-3 text-lg font-bold">
+          <span>Total</span>
+          <span>${total.toFixed(2)}</span>
         </div>
 
-        <aside className="h-fit rounded-[28px] border-2 border-ink/10 bg-white p-6">
-          <h2 className="wordmark text-2xl">Your bag</h2>
-          <ul className="mt-4 space-y-3">
-            {items.map((i) => (
-              <li key={`${i.slug}-${i.color}`} className="flex items-center gap-3">
-                <div className="relative grid h-14 w-14 flex-none place-items-center rounded-xl" style={{ background: i.accent + "22" }}>
-                  <div className="h-8 w-8 rounded-full" style={{ background: i.accent }} />
-                  <span className="absolute -right-2 -top-2 grid h-5 w-5 place-items-center rounded-full bg-ink text-xs text-cream">
-                    {i.qty}
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-bold leading-tight">{i.name}</p>
-                  <p className="text-xs text-ink/50">{i.color}</p>
-                </div>
-                <span className="text-sm font-semibold">${(i.price * i.qty).toFixed(2)}</span>
-              </li>
-            ))}
-          </ul>
-          <div className="mt-5 space-y-1.5 border-t-2 border-ink/10 pt-4 text-sm text-ink/70">
-            <Row label="Subtotal" value={`$${subtotal.toFixed(2)}`} />
-            <Row label="Shipping" value={shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`} />
-            <Row label="Tax (est.)" value={`$${tax.toFixed(2)}`} />
-          </div>
-          <div className="mt-3 flex justify-between border-t-2 border-ink/10 pt-3 text-lg font-bold">
-            <span>Total</span>
-            <span>${total.toFixed(2)}</span>
-          </div>
-        </aside>
-      </form>
+        {error && <p className="mt-4 text-sm font-semibold text-pink-deep">{error}</p>}
+
+        <button onClick={pay} disabled={loading} className="btn-ink mt-6 w-full text-lg">
+          {loading ? "Redirecting…" : `Pay securely · $${total.toFixed(2)}`}
+        </button>
+        <Link href="/cart" className="mt-3 block text-center text-sm font-semibold underline">
+          Back to bag
+        </Link>
+
+        <div className="mt-5 flex items-center justify-center gap-2 text-xs text-ink/50">
+          <span>🔒 Encrypted checkout</span> · <span>Latex-free · Vegan</span> · <span>30-day returns</span>
+        </div>
+      </div>
     </div>
-  );
-}
-
-function Fieldset({ title, children }: { title: string; children: React.ReactNode }) {
-  return (
-    <fieldset>
-      <legend className="wordmark mb-4 text-2xl">{title}</legend>
-      <div className="grid grid-cols-2 gap-4">{children}</div>
-    </fieldset>
-  );
-}
-
-function Input({
-  label,
-  full,
-  ...props
-}: { label: string; full?: boolean } & React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <label className={`block ${full ? "col-span-2" : ""}`}>
-      <span className="mb-1 block text-sm font-semibold">{label}</span>
-      <input
-        {...props}
-        className="w-full rounded-xl border-2 border-ink/15 bg-white px-4 py-3 focus:border-pink focus:outline-none"
-      />
-    </label>
   );
 }
 
