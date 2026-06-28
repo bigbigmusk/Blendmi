@@ -20,10 +20,19 @@ export function ProductCard({ product }: { product: Product }) {
               {product.isNew ? "NEW" : "BESTSELLER"}
             </span>
           )}
-          <ProductArt
-            product={product}
-            className="h-full w-full p-8 transition-transform duration-500 group-hover:scale-105"
-          />
+          {product.image ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={product.image}
+              alt={product.name}
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <ProductArt
+              product={product}
+              className="h-full w-full p-8 transition-transform duration-500 group-hover:scale-105"
+            />
+          )}
         </div>
       </Link>
       <div className="p-5">

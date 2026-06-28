@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import { useCart } from "@/components/CartProvider";
 import { BlobEye } from "@/components/BrandArt";
 import { PayPalCheckout } from "@/components/PayPalCheckout";
+import { PaymentBadges } from "@/components/PaymentBadges";
 
 export default function CheckoutPage() {
   return (
@@ -157,8 +158,11 @@ function Checkout() {
           Back to bag
         </Link>
 
-        <div className="mt-5 flex items-center justify-center gap-2 text-xs text-ink/50">
-          <span>🔒 Encrypted checkout</span> · <span>Latex-free · Vegan</span> · <span>30-day returns</span>
+        <div className="mt-6 flex flex-col items-center gap-3">
+          <PaymentBadges />
+          <div className="flex items-center gap-2 text-xs text-ink/50">
+            <span>🔒 Encrypted checkout</span> · <span>Latex-free · Vegan</span> · <span>30-day returns</span>
+          </div>
         </div>
       </div>
     </div>

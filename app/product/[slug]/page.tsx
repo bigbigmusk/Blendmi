@@ -2,9 +2,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getProduct, products } from "@/lib/products";
-import { ProductArt } from "@/components/BrandArt";
+import { ProductGallery } from "@/components/ProductGallery";
 import { ProductBuy } from "@/components/ProductBuy";
 import { ProductCard } from "@/components/ProductCard";
+import { PaymentBadges } from "@/components/PaymentBadges";
 
 export function generateStaticParams() {
   return products.map((p) => ({ slug: p.slug }));
@@ -37,12 +38,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
       </nav>
 
       <div className="grid gap-10 lg:grid-cols-2">
-        <div
-          className="card grid place-items-center overflow-hidden p-6"
-          style={{ background: `linear-gradient(160deg, ${product.accent}1a, ${product.accent}33)` }}
-        >
-          <ProductArt product={product} className="w-full max-w-md animate-float" />
-        </div>
+        <ProductGallery product={product} />
 
         <div>
           {(product.bestseller || product.isNew) && (
@@ -73,6 +69,11 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
                 {t}
               </div>
             ))}
+          </div>
+
+          <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-ink/50">
+            <span>🔒 Secure checkout</span>
+            <PaymentBadges />
           </div>
         </div>
       </div>

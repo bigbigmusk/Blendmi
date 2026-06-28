@@ -5,6 +5,7 @@ import { useState } from "react";
 import { socialLinks } from "@/lib/social";
 import { SocialIcon } from "./Icons";
 import { BlobEye } from "./BrandArt";
+import { PaymentBadges } from "./PaymentBadges";
 
 export function Footer() {
   const [email, setEmail] = useState("");
@@ -103,8 +104,16 @@ export function Footer() {
         </div>
       </div>
 
-      <div className="border-t border-cream/15 py-6 text-center text-xs text-cream/50">
-        © {new Date().getFullYear()} BLENDMI™ · Be Odd. · Blend Your Way.
+      <div className="border-t border-cream/15">
+        <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-6 sm:flex-row">
+          <p className="text-xs text-cream/50">
+            © {new Date().getFullYear()} BLENDMI™ · Be Odd. · Blend Your Way.
+          </p>
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-cream/50">We accept</span>
+            <PaymentBadges />
+          </div>
+        </div>
       </div>
     </footer>
   );

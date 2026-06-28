@@ -15,9 +15,13 @@ export type Product = {
   description: string;
   details: string[];
   colors: ProductColor[];
-  /** Visual style used by the SVG illustrator. */
+  /** Visual style used by the SVG illustrator (fallback when no photo is set). */
   art: "teardrop" | "peanut" | "round" | "brushes" | "puff" | "tote" | "set" | "sticker";
   accent: string; // primary illustration color
+  /** Optional real product photo, e.g. "/products/the-blender.jpg". Overrides the SVG art. */
+  image?: string;
+  /** Optional extra photos for the product detail gallery. */
+  gallery?: string[];
 };
 
 export const products: Product[] = [
